@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demo Accordion Monotributo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-2xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">Demo Accordion Monotributo</h1>
+    <div id="root"></div>
+  </div>
+
+  <script type="text/babel">
+
+    const Accordion = ({ items }) => {
+      const [expandedIndex, setExpandedIndex] = React.useState(null);
+      const toggleItem = (index) => {
+        setExpandedIndex(expandedIndex === index ? null : index);
+      };
+      const createMarkup = (htmlContent) => {
+        return { __html: htmlContent };
+      };
+      return (
+        <div className="space-y-4">
+          {items.map((item, index) => (
+            <div key={index} className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+              <div 
+                className="bg-white p-4 flex justify-between items-center cursor-pointer"
+                onClick={() => toggleItem(index)}
+              >
+                <h3 className="text-lg font-medium">{item.header}</h3>
+                <span className={\`transform transition-transform \${expandedIndex === index ? 'rotate-180' : ''}\`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </div>
+              {expandedIndex === index && (
+                <div className="bg-gray-50 p-4">
+                  <div 
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={createMarkup(item.content)}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+    const items = [
+      {
+        header: "¿Qué es el Monotributo?",
+        content: "<p>Es un régimen simplificado para pequeños contribuyentes en Argentina.</p>"
+      },
+      {
+        header: "¿Quiénes pueden adherirse?",
+        content: "<p>Personas físicas y algunas sociedades con ingresos menores a los topes establecidos.</p>"
+      },
+      {
+        header: "Categorías y montos",
+        content: "<ul><li>Categoría A: hasta $2.108.288</li><li>Categoría B: hasta $3.133.941</li></ul>"
+      }
+    ];
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Accordion items={items} />);
+  </script>
+</body>
+</html>
